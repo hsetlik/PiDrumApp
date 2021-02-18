@@ -66,7 +66,7 @@ public:
     void timerCallback() override
     {
         seq.repaint();
-        //header.repaint();
+        header.repaint();
     }
 private:
     Sequence seq;

@@ -58,7 +58,8 @@ void Step::paintButton(juce::Graphics &g, bool mouseIsOver, bool mouseIsDown)
     {
         g.setColour(juce::Colours::black);
     }
-    g.drawRect(border, 2);
+    if(!(border.getX() < 0))
+        g.drawRect(border, 2);
 }
 
 //=========================================================================
@@ -249,9 +250,12 @@ void Track::mouseDrag(const juce::MouseEvent &m)
     if(m.mouseWasDraggedSinceMouseDown())
     {
         Step* selectedStep = stepAtXPos(m.getScreenX());
-        if(selectedStep->getIsSelected() == false && selectedSteps.size() < 5)
+        if(selectedStep != NULL)
         {
-            selectStep(selectedStep);
+            if(selectedStep->getIsSelected() == false && selectedSteps.size() < 5)
+            {
+                selectStep(selectedStep);
+            }
         }
     }
 }
@@ -300,10 +304,10 @@ void Track::increaseSubdivision()
               printf("Step %d length: %d\n", i, lastStep->lengthInSubDivs());
               lastStep->addMouseListener(this, true);
           }
-          resized();
+          //resized();
       }
       int lastTupletIndex = firstNoteIndex + numNotesStart + 1;
-      for(int i = 0; i < sequenceLength - lastTupletIndex; ++i)
+      for(int i = 0; i < sequenceLength - (lastTupletIndex + 1); ++i)
       {
           steps.getUnchecked(lastTupletIndex + i)->incrementIndex();
       }
@@ -318,6 +322,7 @@ void Track::increaseSubdivision()
       {
           selectStep(newSteps[i]);
       }
+      resized();
   }
     
     printf("current step number: %d\n", steps.size());
@@ -413,9 +418,9 @@ Sequence::Sequence(int length, int maxSubDivs, int temp) : maxSubdivisions(maxSu
     tracks.add(new Track(sequenceLength, maxSubDivs, clap));
     tracks.add(new Track(sequenceLength, maxSubDivs, clave));
     
-    for(int i = 0; i < tracks.size(); ++i)
+    for(auto& i : tracks)
     {
-        addAndMakeVisible(*tracks.getUnchecked(i));
+        addAndMakeVisible(*i);
     }
     maxDivIndex = 0;
     isPlaying = false;
@@ -471,9 +476,9 @@ void Sequence::resized()
 
 void Sequence::mouseDown(const juce::MouseEvent &m)
 {
-    for(int i = 0; i < tracks.size(); ++i)
+    for(auto& i : tracks)
     {
-        tracks.getUnchecked(i)->clearSelection();
+        i->clearSelection();
     }
 }
 
