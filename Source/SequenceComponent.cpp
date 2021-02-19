@@ -17,7 +17,6 @@ const juce::Colour noteColorOff = Color::blend(noteColorOn, juce::Colours::black
 const juce::Colour deselected = Color::RGBColor(37, 49, 53);
 const juce::Colour selected = Color::RGBColor(159, 207, 219);
 
-std::vector<StepComponent*> TrackComponent::selectedSteps;
 StepComponent::StepComponent(int trkIndex, int stpIndex, SequenceProcessor* p) : juce::ShapeButton("stepButton", restColorOff, restColorOff, noteColorOff), trackIndex(trkIndex), stepIndex(stpIndex), proc(p)
 {
     state = restOff;
@@ -129,6 +128,7 @@ void TrackComponent::selectStep(StepComponent *toSelect)
 {
     toSelect->isSelected = true;
     selectedSteps.push_back(toSelect);
+    printf("Selected step %d on track %d\n", toSelect->stepIndex, (int)voiceType);
 }
 
 void TrackComponent::mouseDown(const juce::MouseEvent &m)
@@ -150,6 +150,37 @@ void TrackComponent::mouseDrag(const juce::MouseEvent &m)
         }
     }
 }
+
+bool TrackComponent::hasSelection()
+{
+    if(selectedSteps.size() > 1)
+        return true;
+    else
+        return false;
+}
+
+void TrackComponent::tupletUp()
+{
+    if(selectedSteps.size() > 0)
+    {
+        startIndex = selectedSteps[0]->stepIndex;
+        endIndex = selectedSteps[selectedSteps.size() - 1]->stepIndex;
+        proc->tracks[(int)voiceType]->tupletUp(startIndex, endIndex);
+        startNum = endIndex - startIndex + 1;
+        endNum = startNum + 1;
+        stepButtons.removeRange(startIndex, startNum);
+        for(int i = 0; i < endNum; ++i)
+        {
+            stepButtons.insert(startIndex + i, new StepComponent((int)voiceType, startIndex + i, proc));
+            stepButtons[startIndex + i]->addListener(this);
+            stepButtons[startIndex + i]->addMouseListener(this, true);
+            addAndMakeVisible(stepButtons[startIndex + i]);
+        }
+        resized();
+        for(int i = endNum + startIndex; i < stepButtons.size(); ++i)
+            stepButtons[i]->stepIndex += 1;
+    }
+}
 //============================================================================
 
 SequenceComponent::SequenceComponent(SequenceProcessor* p) : header("untitled", p), proc(p)
@@ -160,6 +191,7 @@ SequenceComponent::SequenceComponent(SequenceProcessor* p) : header("untitled", 
     {
         trackComponents.add(new TrackComponent(analogVoice(i), proc));
         addAndMakeVisible(trackComponents.getLast());
+        trackComponents.getLast()->clearSelection();
         printf("Track %d created\n", i);
     }
     startTimerHz(30);
@@ -219,6 +251,9 @@ bool SequenceComponent::keyPressed(const juce::KeyPress &p)
         }
         case 'm': //m for more
         {
+            auto* track = selectedTrack();
+            if(track != nullptr)
+                track->tupletUp();
             break;
         }
         case 'l':

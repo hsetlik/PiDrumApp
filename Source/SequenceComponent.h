@@ -120,8 +120,10 @@ public:
     void resized() override;
     void paint(juce::Graphics& g) override
     {
+        /*
         for(auto* s : stepButtons)
             s->paintButton(g, false, false);
+         */
     }
     StepComponent* stepAtXPos(int xPos);
     void buttonClicked(juce::Button* b) override;
@@ -129,7 +131,13 @@ public:
     void mouseDrag(const juce::MouseEvent& m) override;
     void selectStep(StepComponent* toSelect);
     void clearSelection();
-    static std::vector<StepComponent*> selectedSteps;
+    bool hasSelection();
+    void tupletUp();
+    std::vector<StepComponent*> selectedSteps;
+    int startIndex;
+    int endIndex;
+    int startNum;
+    int endNum;
 private:
     double subDivWidth;
     TrackLabelComponent label;
@@ -171,14 +179,18 @@ public:
     SequenceComponent(SequenceProcessor* p);
     ~SequenceComponent() {}
     void timerCallback() override;
-    void paint(juce::Graphics& g) override
-    {
-       // for(auto* t : trackComponents)
-            //t->repaint();
-    }
     void resized() override;
     bool keyPressed(const juce::KeyPress &p) override;
     void mouseDown(const juce::MouseEvent& m) override;
+    TrackComponent* selectedTrack()
+    {
+        for(auto* t : trackComponents)
+        {
+            if(t->hasSelection())
+                return t;
+        }
+        return nullptr;
+    }
 private:
     juce::OwnedArray<TrackData>* trackData;
     SequenceHeader header;

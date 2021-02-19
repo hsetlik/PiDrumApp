@@ -17,7 +17,7 @@ const int NUM_TRACKS = 7;
 
 enum analogVoice
 {
-    kick1,
+    kick1 = 0,
     kick2,
     openHat,
     closedHat,
@@ -83,9 +83,10 @@ public:
         {
             steps.add(new StepData(MIN_SUBDIV, i));
         }
-        currentStep = steps[0];
         steps[0]->isCurrent = true;
         setStartSubDivs();
+        currentStep = steps[0];
+        currentSubDivIndex = 0;
     }
     ~TrackData() {}
     void setStartSubDivs()
@@ -96,59 +97,32 @@ public:
             s->startSubDiv = total;
             total += s->numSubDivs;
         }
-        currentStep = steps[0];
-        currentSubDivIndex = 0;
     }
     juce::OwnedArray<StepData> steps;
     void setToSubDiv(int index)
     {
         currentSubDivIndex = index;
-        if(currentSubDivIndex < totalSubDivs)
-        {
-            auto currentStepIndex = currentStep->indexInTrack;
-            auto limit = currentStep->startSubDiv + currentStep->numSubDivs;
-            if(index > limit)
-            {
-                currentStep->isCurrent = false;
-                if(currentStepIndex == steps.size() - 1)
-                {
-                    currentStep = steps[0];
-                }
-                else
-                    currentStep = steps[currentStepIndex + 1];
-                currentStep->isCurrent = true;
-            }
-        }
-        else
-        {
-            currentSubDivIndex -= totalSubDivs;
-            currentStep->isCurrent = false;
-            currentStep = steps[0];
-            currentStep->isCurrent = true;
-        }
         for(auto* s : steps)
         {
-            s->getState();
+            if(s->startSubDiv <= currentSubDivIndex && currentSubDivIndex < (s->startSubDiv + s->numSubDivs))
+            {
+                currentStep = s;
+                s->isCurrent = true;
+                break;
+            }
+            else
+                s->isCurrent = false;
         }
     }
     //sort these shits out later...
-    void tupletUp(int firstIndex, int lastIndex)
-    {
-        auto startCount = lastIndex - firstIndex;
-        if(startCount >= 1)
-        {
-            
-        }
-    }
-    void tupletDown(int firstIndex, int lastIndex)
-    {
-        
-    }
+    void tupletUp(int firstIndex, int lastIndex);
+    void tupletDown(int firstIndex, int lastIndex);
     int activeStepIndex()
     {
         return currentStep->indexInTrack;
     }
 private:
+    int lastStepIndex = 0;
     int totalSubDivs;
     StepData* currentStep;
     int trackIndex;
@@ -170,7 +144,6 @@ public:
     double samplesPerSubDiv;
     double sampleRate;
     double secsPerSubDiv;
-    double samplesRemaining;
 private:
     int totalSubDivs;
     int currentSubDiv;
