@@ -45,6 +45,41 @@ void TrackData::tupletUp(int firstIndex, int lastIndex)
     }
 }
 
+void TrackData::tupletDown(int firstIndex, int lastIndex)
+{
+    if(lastIndex - firstIndex > 1)
+    {
+        auto startNum = lastIndex - firstIndex + 1;
+        auto numEnd = startNum - 1;
+        auto lengthInSubDivs = 0;
+        for(int i = 0; i < startNum; ++i)
+        {
+            lengthInSubDivs += steps[firstIndex + i]->numSubDivs;
+        }
+        printf("length: %d\n", lengthInSubDivs);
+        steps.removeRange(firstIndex, startNum);
+        auto newLength = lengthInSubDivs / numEnd;
+        for(int i = 0; i < numEnd; ++i)
+        {
+            steps.insert(firstIndex + i, new StepData(newLength, firstIndex + i));
+        }
+        int ind = 0;
+        for(auto* s : steps)
+        {
+            s->indexInTrack = ind;
+            ++ind;
+        }
+        setStartSubDivs();
+        printf("Track Number %d\n", (int)voice);
+        int i = 0;
+        for(auto* s : steps)
+        {
+            printf("Step %d starts at %d with length %d\n", i, s->startSubDiv, s->numSubDivs);
+            ++i;
+        }
+    }
+}
+
 SequenceProcessor::SequenceProcessor()
 {
     TEMPO = 120;

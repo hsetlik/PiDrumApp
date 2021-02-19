@@ -114,7 +114,6 @@ public:
                 s->isCurrent = false;
         }
     }
-    //sort these shits out later...
     void tupletUp(int firstIndex, int lastIndex);
     void tupletDown(int firstIndex, int lastIndex);
     int activeStepIndex()

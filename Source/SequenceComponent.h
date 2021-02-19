@@ -133,6 +133,7 @@ public:
     void clearSelection();
     bool hasSelection();
     void tupletUp();
+    void tupletDown();
     std::vector<StepComponent*> selectedSteps;
     int startIndex;
     int endIndex;

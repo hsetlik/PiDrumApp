@@ -181,9 +181,32 @@ void TrackComponent::tupletUp()
             stepButtons[i]->stepIndex += 1;
     }
 }
+
+void TrackComponent::tupletDown()
+{
+    if(selectedSteps.size() > 1)
+    {
+        startIndex = selectedSteps[0]->stepIndex;
+        endIndex = selectedSteps[selectedSteps.size() - 1]->stepIndex;
+        proc->tracks[(int)voiceType]->tupletDown(startIndex, endIndex);
+        startNum = endIndex - startIndex + 1;
+        endNum = startNum - 1;
+        stepButtons.removeRange(startIndex, startNum);
+        for(int i = 0; i < endNum; ++i)
+        {
+            stepButtons.insert(startIndex + i, new StepComponent((int)voiceType, startIndex + i, proc));
+            stepButtons[startIndex + i]->addListener(this);
+            stepButtons[startIndex + i]->addMouseListener(this, true);
+            addAndMakeVisible(stepButtons[startIndex + i]);
+        }
+        resized();
+        for(int i = endNum + startIndex; i < stepButtons.size(); ++i)
+            stepButtons[i]->stepIndex -= 1;
+    }
+}
 //============================================================================
 
-SequenceComponent::SequenceComponent(SequenceProcessor* p) : header("untitled", p), proc(p)
+SequenceComponent::SequenceComponent(SequenceProcessor* p) : header("New Sequence", p), proc(p)
 {
     addMouseListener(this, true);
     addAndMakeVisible(header);
@@ -194,8 +217,10 @@ SequenceComponent::SequenceComponent(SequenceProcessor* p) : header("untitled", 
         trackComponents.getLast()->clearSelection();
         printf("Track %d created\n", i);
     }
-    startTimerHz(30);
+    startTimerHz(24);
+    setFocusContainer(true);
     setWantsKeyboardFocus(true);
+    setMouseClickGrabsKeyboardFocus(true);
 }
 
 void SequenceComponent::resized()
@@ -258,6 +283,9 @@ bool SequenceComponent::keyPressed(const juce::KeyPress &p)
         }
         case 'l':
         {
+            auto* track = selectedTrack();
+            if(track != nullptr)
+                track->tupletDown();
             break;
         }
         default:
