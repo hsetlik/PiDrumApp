@@ -12,7 +12,6 @@
 
 juce::MidiMessage TrackData::getNoteOn()
 {
-    
     auto channel = 1;
     auto velocity = 1.0f;
     int noteNumber;
