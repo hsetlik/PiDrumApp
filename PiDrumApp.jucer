@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="qi2i8Z" name="PiDrumApp" projectType="guiapp" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1"
+              version="1">
   <MAINGROUP id="lA12Su" name="PiDrumApp">
     <GROUP id="{9F58E11E-4316-4C36-260B-33F047F4F0A8}" name="Source">
       <FILE id="ejKcsr" name="SequenceComponent.cpp" compile="1" resource="0"
