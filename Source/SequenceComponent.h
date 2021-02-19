@@ -13,10 +13,13 @@
 #include "SequenceProcessor.h"
 #include "RGBColor.h"
 
+const int LABEL_WIDTH = 80;
+const int HEADER_HEIGHT = 45;
+
 class StepComponent : public juce::ShapeButton
 {
 public:
-    StepComponent(int start, int length);
+    StepComponent(int trackIndex, int sequenceIndex, SequenceProcessor* p);
     ~StepComponent() {}
     void paintButton(juce::Graphics& g, bool mouseIsOver, bool mouseIsDown) override;
     void toggleNote()
@@ -28,6 +31,7 @@ public:
     stepState state;
     int trackIndex;
     int stepIndex;
+    SequenceProcessor* proc;
 };
 
 class TrackLabelComponent : public juce::Component
@@ -113,16 +117,75 @@ private:
 };
 
 
-class TrackComponent : public juce::Component
+class TrackComponent : public juce::Component, juce::Button::Listener
 {
 public:
-    TrackComponent(analogVoice v);
+    TrackComponent(analogVoice v, SequenceProcessor* p);
     ~TrackComponent() {}
     void resized() override;
-    void paint(juce::Graphics& g) override;
-    
+    void paint(juce::Graphics& g) override
+    {
+        for(auto* s : stepButtons)
+            s->repaint();
+    }
+    StepComponent* stepAtXPos(int xPos);
+    void buttonClicked(juce::Button* b) override;
+    void mouseDown(const juce::MouseEvent& m) override;
+    void mouseDrag(const juce::MouseEvent& m) override;
+    void selectStep(StepComponent* toSelect);
+    void clearSelection();
+    static std::vector<StepComponent*> selectedSteps;
 private:
+    double subDivWidth;
     TrackLabelComponent label;
     analogVoice voiceType;
     juce::OwnedArray<StepComponent> stepButtons;
+    SequenceProcessor* proc;
+};
+
+class SequenceHeader : public juce::Component
+{
+public:
+    SequenceHeader(juce::String seqName, SequenceProcessor* p) : name(seqName), proc(p)
+    {
+        background = color.RGBColor(42, 58, 112);
+    }
+    ~SequenceHeader() {}
+    void paint(juce::Graphics& g) override
+    {
+        g.fillAll(background);
+        auto n = getHeight() / 6;
+        g.setColour(text);
+        g.setFont(juce::Font("Press Start 2P", 15.0f, 0));
+        g.drawSingleLineText(name, n, 5 * n);
+        auto tempoString = "Tempo: " + juce::String(proc->TEMPO);
+        auto x = getWidth() / 3;
+        g.drawSingleLineText(tempoString, 2 * x, 5 * n);
+    }
+private:
+    juce::Colour background = juce::Colours::black;
+    juce::Colour text = juce::Colours::white;
+    Color color;
+    juce::String name;
+    SequenceProcessor* proc;
+};
+
+class SequenceComponent : public juce::Component, juce::Timer
+{
+public:
+    SequenceComponent(SequenceProcessor* p);
+    ~SequenceComponent() {}
+    void timerCallback() override;
+    void paint(juce::Graphics& g) override
+    {
+        for(auto* t : trackComponents)
+            t->repaint();
+    }
+    void resized() override;
+    bool keyPressed(const juce::KeyPress &p) override;
+private:
+    juce::OwnedArray<TrackData>* trackData;
+    SequenceHeader header;
+    juce::OwnedArray<TrackComponent> trackComponents;
+    SequenceProcessor* proc;
 };

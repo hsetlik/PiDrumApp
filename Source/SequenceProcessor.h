@@ -119,15 +119,16 @@ class SequenceProcessor
 public:
     SequenceProcessor();
     ~SequenceProcessor() {}
-    static float TEMPO;
+    float TEMPO;
+    void updateToTempo();
     void setSampleRate(double rate);
     void advanceBySamples(int numSamples);
-    static juce::OwnedArray<TrackData> tracks;
-    static bool isPlaying;
+    juce::OwnedArray<TrackData> tracks;
+    bool isPlaying;
+    int samplesPerSubDiv;
+    double sampleRate;
 private:
     int totalSubDivs;
     int currentSubDiv;
-    int samplesPerSubDiv;
     int samplesIntoSubDiv;
-    double sampleRate;
 };

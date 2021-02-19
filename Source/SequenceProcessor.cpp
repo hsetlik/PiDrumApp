@@ -10,9 +10,6 @@
 
 #include "SequenceProcessor.h"
 
-juce::OwnedArray<TrackData> SequenceProcessor::tracks = juce::OwnedArray<TrackData>();
-bool SequenceProcessor::isPlaying = false;
-
 SequenceProcessor::SequenceProcessor()
 {
     TEMPO = 120;
@@ -47,4 +44,10 @@ void SequenceProcessor::advanceBySamples(int numSamples)
     {
         t->setToSubDiv(currentSubDiv);
     }
+}
+
+void SequenceProcessor::updateToTempo()
+{
+    auto subDivSecs = (double)(TEMPO / 60.0f) / MIN_SUBDIV;
+    samplesPerSubDiv = subDivSecs * sampleRate;
 }

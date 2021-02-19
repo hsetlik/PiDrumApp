@@ -1,10 +1,11 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : processor()
+MainComponent::MainComponent() : processor(), comp(&processor)
 {
     // Make sure you set the size of the component after
     // you add any child components.
+    addAndMakeVisible(comp);
     setSize (800, 480);
 
     // Some platforms require permissions to open input channels so request that here
@@ -35,7 +36,7 @@ void MainComponent::prepareToPlay (int samplesPerBlockExpected, double sampleRat
 
 void MainComponent::getNextAudioBlock (const juce::AudioSourceChannelInfo& bufferToFill)
 {
-    if(SequenceProcessor::isPlaying)
+    if(processor.isPlaying)
         processor.advanceBySamples(bufferToFill.numSamples);
     bufferToFill.clearActiveBufferRegion();
 }
@@ -59,7 +60,9 @@ void MainComponent::paint (juce::Graphics& g)
 
 void MainComponent::resized()
 {
+    comp.setBounds(getBounds());
     // This is called when the MainContentComponent is resized.
     // If you add any child components, this is where you should
     // update their positions.
+    
 }

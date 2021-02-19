@@ -17,12 +17,13 @@
 //==============================================================================
 /*
 */
+/*
 
 const int HEADERHEIGHT = 45;
 class SequenceHeader : public juce::Component
 {
 public:
-    SequenceHeader(juce::String seqName, Sequence* sibling) : name(seqName), siblingSeq(sibling)
+    SequenceHeader(juce::String seqName) : name(seqName)
     {
         background = color.RGBColor(42, 58, 112);
     }
@@ -72,5 +73,5 @@ private:
     Sequence seq;
     SequenceHeader header;
 };
-
+*/
 

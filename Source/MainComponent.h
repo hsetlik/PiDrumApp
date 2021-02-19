@@ -1,8 +1,7 @@
 #pragma once
 
 #include <JuceHeader.h>
-#include "Sequencer.h"
-#include "SequencerPanel.h"
+#include "SequenceComponent.h"
 //==============================================================================
 /*
     This component lives inside our window, and this is where you should put all
@@ -28,6 +27,7 @@ private:
     //==============================================================================
     // Your private member variables go here...
     SequenceProcessor processor;
+    SequenceComponent comp;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainComponent)
 };
