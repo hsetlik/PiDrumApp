@@ -118,13 +118,6 @@ public:
     TrackComponent(analogVoice v, SequenceProcessor* p);
     ~TrackComponent() {}
     void resized() override;
-    void paint(juce::Graphics& g) override
-    {
-        /*
-        for(auto* s : stepButtons)
-            s->paintButton(g, false, false);
-         */
-    }
     StepComponent* stepAtXPos(int xPos);
     void buttonClicked(juce::Button* b) override;
     void mouseDown(const juce::MouseEvent& m) override;

@@ -102,6 +102,7 @@ public:
     void setToSubDiv(int index)
     {
         currentSubDivIndex = index;
+        lastStepIndex = currentStep->indexInTrack;
         for(auto* s : steps)
         {
             if(s->startSubDiv <= currentSubDivIndex && currentSubDivIndex < (s->startSubDiv + s->numSubDivs))
@@ -113,6 +114,11 @@ public:
             else
                 s->isCurrent = false;
         }
+        if(currentStep->hasNote && currentStep->indexInTrack != lastStepIndex)
+            noteOutput = true;
+        else
+            noteOutput = false;
+        lastStepIndex = currentStep->indexInTrack;
     }
     void tupletUp(int firstIndex, int lastIndex);
     void tupletDown(int firstIndex, int lastIndex);
@@ -120,6 +126,8 @@ public:
     {
         return currentStep->indexInTrack;
     }
+    juce::MidiMessage getNoteOn();
+    bool noteOutput;
 private:
     int lastStepIndex = 0;
     int totalSubDivs;
@@ -144,6 +152,7 @@ public:
     double sampleRate;
     double secsPerSubDiv;
 private:
+    std::unique_ptr<juce::MidiOutput> midiOut;
     int totalSubDivs;
     int currentSubDiv;
     int samplesIntoSubDiv;

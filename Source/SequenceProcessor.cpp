@@ -10,6 +10,48 @@
 
 #include "SequenceProcessor.h"
 
+juce::MidiMessage TrackData::getNoteOn()
+{
+    
+    auto channel = 1;
+    auto velocity = 1.0f;
+    int noteNumber;
+    switch(voice)
+    {
+        case kick1:
+        {
+            noteNumber = 36;
+            break;
+        }
+        case kick2: {
+            noteNumber = 35;
+            break;
+        }
+        case openHat: {
+            noteNumber = 46;
+            break;
+        }
+        case closedHat: {
+            noteNumber = 42;
+            break;
+        }
+        case snare: {
+            noteNumber = 40;
+            break;
+        }
+        case clap: {
+            noteNumber = 39;
+            break;
+        }
+        case clave: {
+            noteNumber = 37;
+            break;
+        }
+    }
+    printf("played note: %d\n", noteNumber);
+    return juce::MidiMessage::noteOn(channel, noteNumber, velocity);
+}
+
 void TrackData::tupletUp(int firstIndex, int lastIndex)
 {
     if(lastIndex - firstIndex > 0)
@@ -21,7 +63,6 @@ void TrackData::tupletUp(int firstIndex, int lastIndex)
         {
             lengthInSubDivs += steps[firstIndex + i]->numSubDivs;
         }
-        printf("length: %d\n", lengthInSubDivs);
         steps.removeRange(firstIndex, startNum);
         auto newLength = lengthInSubDivs / numEnd;
         for(int i = 0; i < numEnd; ++i)
@@ -35,13 +76,6 @@ void TrackData::tupletUp(int firstIndex, int lastIndex)
             ++ind;
         }
         setStartSubDivs();
-        printf("Track Number %d\n", (int)voice);
-        int i = 0;
-        for(auto* s : steps)
-        {
-            printf("Step %d starts at %d with length %d\n", i, s->startSubDiv, s->numSubDivs);
-            ++i;
-        }
     }
 }
 
@@ -56,7 +90,6 @@ void TrackData::tupletDown(int firstIndex, int lastIndex)
         {
             lengthInSubDivs += steps[firstIndex + i]->numSubDivs;
         }
-        printf("length: %d\n", lengthInSubDivs);
         steps.removeRange(firstIndex, startNum);
         auto newLength = lengthInSubDivs / numEnd;
         for(int i = 0; i < numEnd; ++i)
@@ -70,13 +103,6 @@ void TrackData::tupletDown(int firstIndex, int lastIndex)
             ++ind;
         }
         setStartSubDivs();
-        printf("Track Number %d\n", (int)voice);
-        int i = 0;
-        for(auto* s : steps)
-        {
-            printf("Step %d starts at %d with length %d\n", i, s->startSubDiv, s->numSubDivs);
-            ++i;
-        }
     }
 }
 
@@ -91,6 +117,11 @@ SequenceProcessor::SequenceProcessor()
     }
     samplesIntoSubDiv = 0;
     currentSubDiv = 0;
+    
+    juce::Array<juce::MidiDeviceInfo> allDevices = juce::MidiOutput::getAvailableDevices();
+    auto midiId = allDevices[0].identifier;
+    printf("Device identifier: %s\n", midiId.toUTF8());
+    midiOut = juce::MidiOutput::openDevice(midiId);
 }
 
 void SequenceProcessor::setSampleRate(double rate)
@@ -118,6 +149,8 @@ void SequenceProcessor::advanceBySamples(int numSamples)
     for(auto* t : tracks)
     {
         t->setToSubDiv(currentSubDiv);
+        if(t->noteOutput && midiOut != NULL)
+            midiOut->sendMessageNow(t->getNoteOn());
     }
 }
 

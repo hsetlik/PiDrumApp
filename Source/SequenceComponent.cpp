@@ -128,7 +128,6 @@ void TrackComponent::selectStep(StepComponent *toSelect)
 {
     toSelect->isSelected = true;
     selectedSteps.push_back(toSelect);
-    printf("Selected step %d on track %d\n", toSelect->stepIndex, (int)voiceType);
 }
 
 void TrackComponent::mouseDown(const juce::MouseEvent &m)
@@ -256,10 +255,6 @@ bool SequenceComponent::keyPressed(const juce::KeyPress &p)
         case 'p': //p for play
         {
             proc->isPlaying = !proc->isPlaying;
-            if(proc->isPlaying)
-                printf("Playback Started\n");
-            else
-                printf("Playback Stopped\n");
             break;
         }
         case 'f': //f for faster
