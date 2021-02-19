@@ -15,24 +15,45 @@ const int MIN_SUBDIV = 60;
 const int NUM_NOTES = 16;
 const int NUM_TRACKS = 7;
 
+enum analogVoice
+{
+    kick1,
+    kick2,
+    openHat,
+    closedHat,
+    snare,
+    clap,
+    clave
+};
+
+enum stepState
+{
+    restOff,
+    restOn,
+    noteOff,
+    noteOn
+};
+
 struct StepData
 {
     StepData(int subDivLength, int indexInTrk) : numSubDivs(subDivLength), indexInTrack(indexInTrk)
     {
         hasNote = false;
         isCurrent = false;
+        state = restOff;
     }
     int numSubDivs;
     int indexInTrack;
     int startSubDiv;
     bool hasNote;
     bool isCurrent;
+    stepState state;
 };
 
 class TrackData
 {
 public:
-    TrackData(int numSteps, int index) : totalSubDivs(numSteps * MIN_SUBDIV), trackIndex(index)
+    TrackData(int numSteps, int index, analogVoice v) : totalSubDivs(numSteps * MIN_SUBDIV), trackIndex(index), voice(v)
     {
         for(int i = 0; i < numSteps; ++i)
         {
@@ -74,7 +95,6 @@ public:
         auto startCount = lastIndex - firstIndex;
         if(startCount >= 1)
         {
-            auto endCount = startCount + 1;
             
         }
     }
@@ -91,6 +111,7 @@ private:
     StepData* currentStep;
     int trackIndex;
     int currentSubDivIndex;
+    analogVoice voice;
 };
 
 class SequenceProcessor
@@ -98,12 +119,11 @@ class SequenceProcessor
 public:
     SequenceProcessor();
     ~SequenceProcessor() {}
-    int getSamplesPerSubDiv(float tempo);
-    int getTotalSubDivs();
     static float TEMPO;
     void setSampleRate(double rate);
     void advanceBySamples(int numSamples);
     static juce::OwnedArray<TrackData> tracks;
+    static bool isPlaying;
 private:
     int totalSubDivs;
     int currentSubDiv;

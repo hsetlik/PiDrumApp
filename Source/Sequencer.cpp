@@ -7,11 +7,11 @@
 
   ==============================================================================
 */
+/*
 
 #include "Sequencer.h"
 
-Step::Step(float length, int maxSub, int index) : juce::ShapeButton("stepButton", restColorOff, restColorOff, noteColorOff), isSelected(false),
-maxSubdivision(maxSub), factor(length), indexInSequence(index)
+Step::Step(int index) : juce::ShapeButton("stepButton", restColorOff, restColorOff, noteColorOff), isSelected(false), indexInSequence(index)
 {
     state = restOff;
     isNote = false;
@@ -69,7 +69,7 @@ Track::Track(int length, int minimumSubDiv, analogVoice type) :  label(type), se
     hasCurrentNote = false;
     for(int i = 0; i < sequenceLength; ++i)
     {
-        steps.add(new Step(1, maxSubdivision, i));
+        steps.add(new Step(i));
         addAndMakeVisible(steps.getLast());
         steps.getLast()->addListener(this);
         steps.getLast()->addMouseListener(this, true);
@@ -84,11 +84,11 @@ Track::Track(int length, int minimumSubDiv, analogVoice type) :  label(type), se
 
 void Track::paint(juce::Graphics &g)
 {
-    /*
+    
     auto bounds = currentStep->getBoundsInParent();
     g.setColour(highlight);
     g.fillRect(bounds);
-     */
+     
 }
 
 void Track::resized()
@@ -103,7 +103,7 @@ void Track::resized()
     //printf("num subdivisions: %d\n", (sequenceLength * maxSubdivision));
     for(int i = 0; i < steps.size(); ++i)
     {
-        auto width = ceil(steps.getUnchecked(i)->getNumSubDivs()) * (subDivWidth);
+        //auto width = ceil() * (subDivWidth);
         steps.getUnchecked(i)->setBounds(rightEdge, 0.0f, width, (float)getHeight());
         rightEdge += width;
     }
@@ -184,25 +184,7 @@ juce::MidiMessage Track::getMidiMessage()
 
 void Track::updateSteps(int numSubdivsIntoSequence)
 {
-    int pos = numSubdivsIntoSequence;
-    int index = 0;
-    for(int i = 0; i < steps.size(); ++i)
-    {
-        Step* checkStep = steps.getUnchecked(i);
-        int noteEnd = index + checkStep->getNumSubDivs();
-        if(index <= pos && pos < noteEnd)
-        {
-            if(currentStep != checkStep && checkStep->isNote)
-            {
-                hasCurrentNote = true;
-            } else {
-                hasCurrentNote = false;
-            }
-            currentStep = checkStep;
-        }
-        index = noteEnd;
-        updateStepState(checkStep);
-    }
+   
 }
 
 Step* Track::stepAtXPos(int xPos)
@@ -270,7 +252,7 @@ void Track::increaseSubdivision()
       auto firstNoteIndex = 1000;
       for(int note = 0; note < numNotesStart; ++note)
       {
-          totalSubDivs += selectedSteps[note]->getNumSubDivs();
+          //totalSubDivs += //selectedSteps[note]->getNumSubDivs();
           auto index = selectedSteps[note]->getIndex();
           printf("start index is: %d\n", index);
           if(index < firstNoteIndex) {firstNoteIndex = index;}
@@ -552,4 +534,6 @@ bool Sequence::keyPressed(const juce::KeyPress &p)
     }
     return false;
 }
+
+*/
 

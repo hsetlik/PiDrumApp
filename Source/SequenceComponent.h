@@ -1,8 +1,8 @@
 /*
   ==============================================================================
 
-    Sequencer.h
-    Created: 22 Dec 2020 10:27:19pm
+    SequenceComponent.h
+    Created: 18 Feb 2021 9:29:25pm
     Author:  Hayden Setlik
 
   ==============================================================================
@@ -10,58 +10,25 @@
 
 #pragma once
 #include <JuceHeader.h>
-#include "RGBColor.h"
 #include "SequenceProcessor.h"
+#include "RGBColor.h"
 
-
-/*
-
-const int LABELWIDTH = 80;
-
-class Step : public juce::ShapeButton
+class StepComponent : public juce::ShapeButton
 {
 public:
-    Step(int index);
-    ~Step(){}
+    StepComponent(int start, int length);
+    ~StepComponent() {}
     void paintButton(juce::Graphics& g, bool mouseIsOver, bool mouseIsDown) override;
     void toggleNote()
     {
-        if(isNote)
-        {
-            isNote = false;
-        }
-        else
-        {
-            isNote = true;
-        }
+        isNote = !isNote;
     }
-    void setRestOffColor(juce::Colour col)
-    {
-        restColorOff = col;
-    }
-    int getIndex() {return indexInSequence;}
-    void setIndex(int index) {indexInSequence = index;}
-    void incrementIndex() {indexInSequence += 1;}
-    void decrementIndex() {indexInSequence -= 1;}
-    void select() {isSelected = true;}
-    void deselect() {isSelected = false;}
-    void setState(stepState newState) {state = newState;}
-    bool getIsSelected() {return isSelected;}
     bool isNote;
-private:
-    stepState state;
     bool isSelected;
-    int maxSubdivision; // maximum number of times a full note length can be divided
-    float factor; //share of a quarter note which this step occupies
-    int indexInSequence;
-    Color color;
-    juce::Colour noteColorOff = juce::Colours::lightblue;
-    juce::Colour noteColorOn = juce::Colours::lightblue;
-    juce::Colour restColorOff = juce::Colours::lightblue;
-    juce::Colour restColorOn = juce::Colours::lightblue;
+    stepState state;
+    int trackIndex;
+    int stepIndex;
 };
-
-
 
 class TrackLabelComponent : public juce::Component
 {
@@ -145,67 +112,17 @@ private:
     juce::Image image;
 };
 
-class Track : public juce::Component, juce::Button::Listener
-{
-public:
-    Track(int length, int minimumSubdiv, analogVoice type);
-    ~Track() {}
-    void resized() override;
-    void paint(juce::Graphics& g) override;
-    void buttonClicked(juce::Button* b) override;
-    void updateStepState(Step* toUpdate);
-    void updateSteps(int numSubdivsIntoSequence);
-    void increaseSubdivision();
-    void decreaseSubdivision();
-    Step* stepAtXPos(int xPos);
-    void mouseDown(const juce::MouseEvent& m) override;
-    void mouseDrag(const juce::MouseEvent& m) override;
-    void selectStep(Step* toSelect);
-    void clearSelection();
-    juce::MidiMessage getMidiMessage();
-    std::vector<Step*> selectedSteps;
-    juce::OwnedArray<Step> steps;
-    analogVoice drumVoice;
-    bool hasCurrentNote;
-private:
-    juce::Colour highlight;
-    Color color;
-    TrackLabelComponent label;
-    int sequenceLength;
-    int maxSubdivision;
-    Step* currentStep;
-};
 
-class Sequence : public juce::Component, juce::HighResolutionTimer
+class TrackComponent : public juce::Component
 {
 public:
-    Sequence(int sequenceLength, int maxSubDivs, int tempo);
-    ~Sequence() {}
-    void togglePlay()
-    {
-        if(isPlaying) isPlaying = false;
-        else isPlaying = true;
-    }
-    void setTempo(int newTempo);
-    void incrementIndex();
-    void hiResTimerCallback() override;
+    TrackComponent(analogVoice v);
+    ~TrackComponent() {}
     void resized() override;
     void paint(juce::Graphics& g) override;
-    bool keyPressed(const juce::KeyPress &p) override;
-    void mouseDown(const juce::MouseEvent& m) override;
-    int getTempo()
-    {
-        return tempo;
-    }
-    Track* getSelectedTrack();
+    
 private:
-    std::unique_ptr<juce::MidiOutput> midiOut;
-    Color color;
-    int maxDivIndex;
-    int maxSubdivisions;
-    int tempo;
-    int sequenceLength;
-    bool isPlaying;
-    juce::OwnedArray<Track> tracks;
+    TrackLabelComponent label;
+    analogVoice voiceType;
+    juce::OwnedArray<StepComponent> stepButtons;
 };
- */

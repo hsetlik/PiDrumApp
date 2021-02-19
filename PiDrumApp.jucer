@@ -4,6 +4,10 @@
               addUsingNamespaceToJuceHeader="0" displaySplashScreen="1" jucerFormatVersion="1">
   <MAINGROUP id="lA12Su" name="PiDrumApp">
     <GROUP id="{9F58E11E-4316-4C36-260B-33F047F4F0A8}" name="Source">
+      <FILE id="ejKcsr" name="SequenceComponent.cpp" compile="1" resource="0"
+            file="Source/SequenceComponent.cpp"/>
+      <FILE id="dc5HkY" name="SequenceComponent.h" compile="0" resource="0"
+            file="Source/SequenceComponent.h"/>
       <FILE id="sKRVo3" name="SequenceProcessor.cpp" compile="1" resource="0"
             file="Source/SequenceProcessor.cpp"/>
       <FILE id="rEgxlY" name="SequenceProcessor.h" compile="0" resource="0"

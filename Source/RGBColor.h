@@ -10,21 +10,21 @@
 
 #pragma once
 #include <JuceHeader.h>
-struct ColorCreator
+struct Color
 {
     //without fourth argument, returns color with fully opaque alpha
-    juce::Colour RGBColor(int r, int g, int b)
+    static juce::Colour RGBColor(int r, int g, int b)
     {
         return(juce::Colour(juce::uint8(r), juce::uint8(g), juce::uint8(b), juce::uint8(255)));
     }
 
     //fourth argument sets alpha
-    juce::Colour RGBColor(int r, int g, int b, int a)
+    static juce::Colour RGBColor(int r, int g, int b, int a)
     {
         return(juce::Colour(juce::uint8(r), juce::uint8(g), juce::uint8(b), juce::uint8(a)));
     }
     
-    juce::Colour blend(juce::Colour colorA, juce::Colour colorB, float ratio)
+    static juce::Colour blend(juce::Colour colorA, juce::Colour colorB, float ratio)
     {
         auto fRedA = colorA.getFloatRed();
         auto fGreenA = colorA.getFloatGreen();

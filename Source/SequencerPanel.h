@@ -41,7 +41,7 @@ public:
 private:
     juce::Colour background = juce::Colours::black;
     juce::Colour text = juce::Colours::white;
-    ColorCreator color;
+    Color color;
     juce::String name;
     Sequence* siblingSeq;
 };
