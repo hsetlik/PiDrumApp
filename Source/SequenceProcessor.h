@@ -34,14 +34,16 @@ enum stepState
     noteOn
 };
 
-struct StepData
+class StepData
 {
-    StepData(int subDivLength, int indexInTrk) : numSubDivs(subDivLength), indexInTrack(indexInTrk)
+public:
+    StepData(int subDivLength, int indexInTrk) : numSubDivs(subDivLength), indexInTrack(indexInTrk), startSubDiv((MIN_SUBDIV / 4) * indexInTrk)
     {
         hasNote = false;
         isCurrent = false;
         state = restOff;
     }
+    ~StepData() {}
     void toggleNote()
     {
         hasNote = !hasNote;
@@ -83,6 +85,7 @@ public:
         }
         currentStep = steps[0];
         steps[0]->isCurrent = true;
+        setStartSubDivs();
     }
     ~TrackData() {}
     void setStartSubDivs()
@@ -100,7 +103,7 @@ public:
     void setToSubDiv(int index)
     {
         currentSubDivIndex = index;
-        if(index < totalSubDivs)
+        if(currentSubDivIndex < totalSubDivs)
         {
             auto currentStepIndex = currentStep->indexInTrack;
             auto limit = currentStep->startSubDiv + currentStep->numSubDivs;
@@ -108,7 +111,9 @@ public:
             {
                 currentStep->isCurrent = false;
                 if(currentStepIndex == steps.size() - 1)
+                {
                     currentStep = steps[0];
+                }
                 else
                     currentStep = steps[currentStepIndex + 1];
                 currentStep->isCurrent = true;
@@ -120,6 +125,10 @@ public:
             currentStep->isCurrent = false;
             currentStep = steps[0];
             currentStep->isCurrent = true;
+        }
+        for(auto* s : steps)
+        {
+            s->getState();
         }
     }
     //sort these shits out later...
@@ -158,8 +167,10 @@ public:
     void advanceBySamples(int numSamples);
     juce::OwnedArray<TrackData> tracks;
     bool isPlaying;
-    int samplesPerSubDiv;
+    double samplesPerSubDiv;
     double sampleRate;
+    double secsPerSubDiv;
+    double samplesRemaining;
 private:
     int totalSubDivs;
     int currentSubDiv;

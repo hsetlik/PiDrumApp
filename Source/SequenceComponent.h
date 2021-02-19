@@ -22,11 +22,6 @@ public:
     StepComponent(int trackIndex, int sequenceIndex, SequenceProcessor* p);
     ~StepComponent() {}
     void paintButton(juce::Graphics& g, bool mouseIsOver, bool mouseIsDown) override;
-    void toggleNote()
-    {
-        isNote = !isNote;
-    }
-    bool isNote;
     bool isSelected;
     stepState state;
     int trackIndex;
@@ -178,8 +173,8 @@ public:
     void timerCallback() override;
     void paint(juce::Graphics& g) override
     {
-        for(auto* t : trackComponents)
-            t->repaint();
+       // for(auto* t : trackComponents)
+            //t->repaint();
     }
     void resized() override;
     bool keyPressed(const juce::KeyPress &p) override;

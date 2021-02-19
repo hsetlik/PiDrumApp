@@ -26,17 +26,22 @@ SequenceProcessor::SequenceProcessor()
 void SequenceProcessor::setSampleRate(double rate)
 {
     sampleRate = rate;
-    auto subDivSecs = (double)((TEMPO / 60.0f) / MIN_SUBDIV);
-    samplesPerSubDiv = subDivSecs * sampleRate;
-    printf("Samples Per SubDiv: %d\n", samplesPerSubDiv);
+    //beats per second = TEMPO / 60
+    //subDivsPerBeat = MIN_SUBDIV
+    secsPerSubDiv = 1.0f / (4.0f * MIN_SUBDIV * (TEMPO / 60.0f));
+
+    samplesPerSubDiv = secsPerSubDiv * sampleRate;
+    
+    printf("Samples Per SubDiv: %f\n", samplesPerSubDiv);
 }
 void SequenceProcessor::advanceBySamples(int numSamples)
 {
     samplesIntoSubDiv += numSamples;
-    if(samplesIntoSubDiv > samplesPerSubDiv)
+    
+    if(samplesIntoSubDiv >= samplesPerSubDiv)
     {
-        samplesIntoSubDiv -= samplesPerSubDiv;
-        currentSubDiv += 1;
+        samplesIntoSubDiv -= (samplesPerSubDiv * floor(numSamples / samplesPerSubDiv));
+        currentSubDiv += floor(numSamples / samplesPerSubDiv);
     }
     if(currentSubDiv > totalSubDivs)
         currentSubDiv = 0;
@@ -48,6 +53,6 @@ void SequenceProcessor::advanceBySamples(int numSamples)
 
 void SequenceProcessor::updateToTempo()
 {
-    auto subDivSecs = (double)(TEMPO / 60.0f) / MIN_SUBDIV;
-    samplesPerSubDiv = subDivSecs * sampleRate;
+    secsPerSubDiv = 1.0f / (4.0f * MIN_SUBDIV * (TEMPO / 60.0f));
+    samplesPerSubDiv = secsPerSubDiv * sampleRate;
 }

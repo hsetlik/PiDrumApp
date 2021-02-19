@@ -22,11 +22,13 @@ StepComponent::StepComponent(int trkIndex, int stpIndex, SequenceProcessor* p) :
 {
     state = restOff;
     isSelected = false;
+    setClickingTogglesState(true);
+    shouldUseOnColours(true);
 }
 
 void StepComponent::paintButton(juce::Graphics &g, bool mouseIsOver, bool mouseIsDown)
 {
-    state = proc->tracks[trackIndex]->steps[stepIndex]->state;
+    state = proc->tracks[trackIndex]->steps[stepIndex]->getState();
     if(isSelected)
     {
         g.setColour(selected);
@@ -89,8 +91,6 @@ void TrackComponent::resized()
         s->setBounds(leftEdge, 0, ceil(proc->tracks[voiceType]->steps[i]->numSubDivs * subDivWidth), getHeight());
         leftEdge += ceil(proc->tracks[voiceType]->steps[i]->numSubDivs * subDivWidth);
         ++i;
-        if((int)voiceType == 1)
-            printf("step left edge: %f\n", leftEdge);
     }
 }
 
@@ -104,7 +104,7 @@ void TrackComponent::clearSelection()
 {
     if(selectedSteps.size() > 0)
     {
-        for(auto* s : stepButtons)
+        for(auto* s : selectedSteps)
             s->isSelected = false;
     }
     selectedSteps.clear();
@@ -163,6 +163,7 @@ SequenceComponent::SequenceComponent(SequenceProcessor* p) : header("untitled", 
         printf("Track %d created\n", i);
     }
     startTimerHz(30);
+    setWantsKeyboardFocus(true);
 }
 
 void SequenceComponent::resized()
