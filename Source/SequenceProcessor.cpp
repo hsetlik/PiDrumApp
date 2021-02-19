@@ -148,8 +148,13 @@ void SequenceProcessor::advanceBySamples(int numSamples)
     for(auto* t : tracks)
     {
         t->setToSubDiv(currentSubDiv);
-        if(t->noteOutput && midiOut != NULL)
-            midiOut->sendMessageNow(t->getNoteOn());
+        
+        if(t->noteOutput)
+        {
+            auto m = t->getNoteOn();
+            if(midiOut != NULL)
+                midiOut->sendMessageNow(m);
+        }
     }
 }
 
