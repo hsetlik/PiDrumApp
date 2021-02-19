@@ -219,7 +219,7 @@ SequenceComponent::SequenceComponent(SequenceProcessor* p) : header("New Sequenc
     startTimerHz(24);
     setFocusContainer(true);
     setWantsKeyboardFocus(true);
-    setMouseClickGrabsKeyboardFocus(true);
+    addMouseListener(this, true);
 }
 
 void SequenceComponent::resized()
@@ -231,6 +231,10 @@ void SequenceComponent::resized()
     {
         t->setBounds(0, bottomEdge, getWidth(), trackHeight);
         bottomEdge += trackHeight;
+    }
+    if(hasKeyboardFocus(false) == false)
+    {
+        juce::Timer::callAfterDelay (100, [&] { grabKeyboardFocus(); });
     }
 }
 
