@@ -42,6 +42,28 @@ struct StepData
         isCurrent = false;
         state = restOff;
     }
+    void toggleNote()
+    {
+        hasNote = !hasNote;
+    }
+    stepState getState()
+    {
+        if(isCurrent)
+        {
+            if(hasNote)
+                state = noteOn;
+            else
+                state = restOn;
+        }
+        else
+        {
+            if(hasNote)
+                state = noteOff;
+            else
+                state = restOff;
+        }
+        return state;
+    }
     int numSubDivs;
     int indexInTrack;
     int startSubDiv;
@@ -59,6 +81,8 @@ public:
         {
             steps.add(new StepData(MIN_SUBDIV, i));
         }
+        currentStep = steps[0];
+        steps[0]->isCurrent = true;
     }
     ~TrackData() {}
     void setStartSubDivs()
@@ -81,12 +105,21 @@ public:
             auto currentStepIndex = currentStep->indexInTrack;
             auto limit = currentStep->startSubDiv + currentStep->numSubDivs;
             if(index > limit)
-                currentStep = steps[currentStepIndex + 1];
+            {
+                currentStep->isCurrent = false;
+                if(currentStepIndex == steps.size() - 1)
+                    currentStep = steps[0];
+                else
+                    currentStep = steps[currentStepIndex + 1];
+                currentStep->isCurrent = true;
+            }
         }
         else
         {
             currentSubDivIndex -= totalSubDivs;
+            currentStep->isCurrent = false;
             currentStep = steps[0];
+            currentStep->isCurrent = true;
         }
     }
     //sort these shits out later...

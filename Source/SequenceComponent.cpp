@@ -66,11 +66,14 @@ void StepComponent::paintButton(juce::Graphics &g, bool mouseIsOver, bool mouseI
 
  TrackComponent::TrackComponent(analogVoice v, SequenceProcessor* p) : label(v), voiceType(v), proc(p)
 {
+    setInterceptsMouseClicks(true, true);
+    addAndMakeVisible(label);
     auto trkIndex = (int)voiceType;
     for(int i = 0; i < NUM_NOTES; ++i)
     {
         stepButtons.add(new StepComponent(trkIndex, i, proc));
         stepButtons.getLast()->addListener(this);
+        stepButtons.getLast()->addMouseListener(this, true);
         addAndMakeVisible(stepButtons.getLast());
     }
 }
@@ -94,14 +97,14 @@ void TrackComponent::resized()
 void TrackComponent::buttonClicked(juce::Button *b)
 {
     StepComponent* thisStep = dynamic_cast<StepComponent*>(b);
-    proc->tracks[thisStep->trackIndex]->steps[thisStep->stepIndex]->hasNote = !proc->tracks[thisStep->trackIndex]->steps[thisStep->stepIndex]->hasNote;
+    proc->tracks[thisStep->trackIndex]->steps[thisStep->stepIndex]->toggleNote();
 }
 
 void TrackComponent::clearSelection()
 {
     if(selectedSteps.size() > 0)
     {
-        for(auto* s : selectedSteps)
+        for(auto* s : stepButtons)
             s->isSelected = false;
     }
     selectedSteps.clear();
@@ -125,6 +128,7 @@ StepComponent* TrackComponent::stepAtXPos(int xPos)
 void TrackComponent::selectStep(StepComponent *toSelect)
 {
     toSelect->isSelected = true;
+    selectedSteps.push_back(toSelect);
 }
 
 void TrackComponent::mouseDown(const juce::MouseEvent &m)
@@ -150,6 +154,7 @@ void TrackComponent::mouseDrag(const juce::MouseEvent &m)
 
 SequenceComponent::SequenceComponent(SequenceProcessor* p) : header("untitled", p), proc(p)
 {
+    addMouseListener(this, true);
     addAndMakeVisible(header);
     for(int i = 0; i < 7; ++i)
     {
@@ -169,13 +174,20 @@ void SequenceComponent::resized()
     {
         t->setBounds(0, bottomEdge, getWidth(), trackHeight);
         bottomEdge += trackHeight;
-        printf("Bottom Edge: %d\n", bottomEdge);
     }
 }
 
 void SequenceComponent::timerCallback()
 {
     repaint();
+}
+
+void SequenceComponent::mouseDown(const juce::MouseEvent &m)
+{
+    for(auto* i : trackComponents)
+    {
+        i->clearSelection();
+    }
 }
 
 bool SequenceComponent::keyPressed(const juce::KeyPress &p)
@@ -185,14 +197,23 @@ bool SequenceComponent::keyPressed(const juce::KeyPress &p)
     {
         case 'p': //p for play
         {
+            proc->isPlaying = !proc->isPlaying;
+            if(proc->isPlaying)
+                printf("Playback Started\n");
+            else
+                printf("Playback Stopped\n");
             break;
         }
         case 'f': //f for faster
         {
+            proc->TEMPO += 1.0;
+            proc->updateToTempo();
             break;
         }
         case 's': //s for slower
         {
+            proc->TEMPO -= 1.0;
+            proc->updateToTempo();
             break;
         }
         case 'm': //m for more

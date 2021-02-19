@@ -26,10 +26,10 @@ SequenceProcessor::SequenceProcessor()
 void SequenceProcessor::setSampleRate(double rate)
 {
     sampleRate = rate;
-    auto subDivSecs = (double)(TEMPO / 60.0f) / MIN_SUBDIV;
+    auto subDivSecs = (double)((TEMPO / 60.0f) / MIN_SUBDIV);
     samplesPerSubDiv = subDivSecs * sampleRate;
+    printf("Samples Per SubDiv: %d\n", samplesPerSubDiv);
 }
-
 void SequenceProcessor::advanceBySamples(int numSamples)
 {
     samplesIntoSubDiv += numSamples;

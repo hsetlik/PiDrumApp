@@ -126,7 +126,7 @@ public:
     void paint(juce::Graphics& g) override
     {
         for(auto* s : stepButtons)
-            s->repaint();
+            s->paintButton(g, false, false);
     }
     StepComponent* stepAtXPos(int xPos);
     void buttonClicked(juce::Button* b) override;
@@ -183,6 +183,7 @@ public:
     }
     void resized() override;
     bool keyPressed(const juce::KeyPress &p) override;
+    void mouseDown(const juce::MouseEvent& m) override;
 private:
     juce::OwnedArray<TrackData>* trackData;
     SequenceHeader header;
