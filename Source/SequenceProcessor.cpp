@@ -47,7 +47,7 @@ juce::MidiMessage TrackData::getNoteOn()
             break;
         }
     }
-    printf("played note: %d\n", noteNumber);
+    //printf("played note: %d\n", noteNumber);
     return juce::MidiMessage::noteOn(channel, noteNumber, velocity);
 }
 
@@ -117,10 +117,8 @@ SequenceProcessor::SequenceProcessor()
     samplesIntoSubDiv = 0;
     currentSubDiv = 0;
     
-    juce::Array<juce::MidiDeviceInfo> allDevices = juce::MidiOutput::getAvailableDevices();
-    auto midiId = allDevices[0].identifier;
-    printf("Device identifier: %s\n", midiId.toUTF8());
-    midiOut = juce::MidiOutput::openDevice(midiId);
+    auto allDevices = juce::MidiOutput::getAvailableDevices();
+    midiOut = juce::MidiOutput::openDevice(allDevices[0].identifier);
 }
 
 void SequenceProcessor::setSampleRate(double rate)
@@ -132,7 +130,7 @@ void SequenceProcessor::setSampleRate(double rate)
 
     samplesPerSubDiv = secsPerSubDiv * sampleRate;
     
-    printf("Samples Per SubDiv: %f\n", samplesPerSubDiv);
+    //printf("Samples Per SubDiv: %f\n", samplesPerSubDiv);
 }
 void SequenceProcessor::advanceBySamples(int numSamples)
 {
@@ -148,7 +146,6 @@ void SequenceProcessor::advanceBySamples(int numSamples)
     for(auto* t : tracks)
     {
         t->setToSubDiv(currentSubDiv);
-        
         if(t->noteOutput)
         {
             auto m = t->getNoteOn();

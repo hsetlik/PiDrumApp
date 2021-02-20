@@ -115,7 +115,7 @@ StepComponent* TrackComponent::stepAtXPos(int xPos)
     {
         auto thisX = stepButtons.getUnchecked(i)->getScreenX();
         auto nextX = thisX + stepButtons.getUnchecked(i)->getWidth();
-        if( xPos > thisX && xPos <= nextX)
+        if(xPos > thisX && xPos <= nextX)
         {
             return stepButtons.getUnchecked(i);
             break;
@@ -214,12 +214,11 @@ SequenceComponent::SequenceComponent(SequenceProcessor* p) : header("New Sequenc
         trackComponents.add(new TrackComponent(analogVoice(i), proc));
         addAndMakeVisible(trackComponents.getLast());
         trackComponents.getLast()->clearSelection();
-        printf("Track %d created\n", i);
+        //printf("Track %d created\n", i);
     }
     startTimerHz(24);
     setFocusContainer(true);
     setWantsKeyboardFocus(true);
-    addMouseListener(this, true);
 }
 
 void SequenceComponent::resized()
@@ -245,10 +244,8 @@ void SequenceComponent::timerCallback()
 
 void SequenceComponent::mouseDown(const juce::MouseEvent &m)
 {
-    for(auto* i : trackComponents)
-    {
-        i->clearSelection();
-    }
+    for(auto* t : trackComponents)
+        t->clearSelection();
 }
 
 bool SequenceComponent::keyPressed(const juce::KeyPress &p)
@@ -256,7 +253,7 @@ bool SequenceComponent::keyPressed(const juce::KeyPress &p)
     auto key = p.getTextCharacter();
     switch(key)
     {
-        case 'p': //p for play
+        case ' ': //
         {
             proc->isPlaying = !proc->isPlaying;
             break;
