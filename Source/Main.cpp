@@ -102,4 +102,9 @@ private:
 
 //==============================================================================
 // This macro generates the main() routine that launches the app.
+/*
+ CONFIGURATION                                DATE     RESULT
+ RPi OS desktop + -m32 + no optimisation      2/20     SLOW
+ RPi OS desktop + -m32 + O3
+ */
 START_JUCE_APPLICATION (PiDrumAppApplication)
