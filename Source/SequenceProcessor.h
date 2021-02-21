@@ -34,6 +34,12 @@ enum stepState
     noteOn
 };
 
+
+struct AtomicInt
+{
+    
+};
+
 class StepData
 {
 public:

@@ -63,17 +63,17 @@
         <CONFIGURATION isDebug="0" name="Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
-        <MODULEPATH id="juce_gui_basics" path="/home/JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="/home/JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="/home/JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="/home/JUCE/modules"/>
-        <MODULEPATH id="juce_core" path="/home/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="/home/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="/home/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="/home/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="/home/JUCE/modules"/>
-        <MODULEPATH id="juce_gui_extra" path="/home/JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="/home/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="/home/pi/JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="/home/pi/JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="/home/pi/JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="/home/pi/JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="/home/pi/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="/home/pi/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="/home/pi/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="/home/pi/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="/home/pi/JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="/home/pi/JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="/home/pi/JUCE/modules"/>
       </MODULEPATHS>
     </LINUX_MAKE>
   </EXPORTFORMATS>
