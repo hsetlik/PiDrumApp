@@ -105,6 +105,6 @@ private:
 /*
  CONFIGURATION                                DATE     RESULT
  RPi OS desktop + -m32 + no optimisation      2/20     SLOW
- RPi OS desktop + -m32 + O3
+ RPi OS desktop + -m32 + O3                   2/20     A good bit faster but still too slow
  */
 START_JUCE_APPLICATION (PiDrumAppApplication)
