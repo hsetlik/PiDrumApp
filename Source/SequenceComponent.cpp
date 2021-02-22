@@ -167,11 +167,14 @@ void TrackComponent::tupletUp()
         else
             endNum = startNum + 1;
         stepButtons.removeRange(startIndex, startNum);
+        clearSelection();
         for(int i = 0; i < endNum; ++i)
         {
             stepButtons.insert(startIndex + i, new StepComponent((int)voiceType, startIndex + i, proc));
             stepButtons[startIndex + i]->addListener(this);
             stepButtons[startIndex + i]->addMouseListener(this, true);
+            selectedSteps.push_back(stepButtons[startIndex + i]);
+            stepButtons[startIndex + i]->isSelected = true;
             addAndMakeVisible(stepButtons[startIndex + i]);
         }
         resized();
@@ -190,11 +193,14 @@ void TrackComponent::tupletDown()
         startNum = endIndex - startIndex + 1;
         endNum = startNum - 1;
         stepButtons.removeRange(startIndex, startNum);
+        clearSelection();
         for(int i = 0; i < endNum; ++i)
         {
             stepButtons.insert(startIndex + i, new StepComponent((int)voiceType, startIndex + i, proc));
             stepButtons[startIndex + i]->addListener(this);
             stepButtons[startIndex + i]->addMouseListener(this, true);
+            selectedSteps.push_back(stepButtons[startIndex + i]);
+            stepButtons[startIndex + i]->isSelected = true;
             addAndMakeVisible(stepButtons[startIndex + i]);
         }
         resized();
@@ -246,7 +252,6 @@ SequenceComponent::SequenceComponent(SequenceProcessor* p, juce::Component* sib)
         trackComponents.add(new TrackComponent(analogVoice(i), proc));
         addAndMakeVisible(trackComponents.getLast());
         trackComponents.getLast()->clearSelection();
-        //printf("Track %d created\n", i);
     }
     startTimerHz(24);
     setFocusContainer(true);
@@ -270,6 +275,7 @@ void SequenceComponent::resized()
 
 void SequenceComponent::timerCallback()
 {
+    //make sure that this component still recieves keystrokes if the user touches the patch manager
     if(!hasKeyboardFocus(false))
         grabKeyboardFocus();
     headerLabel->repaint();
