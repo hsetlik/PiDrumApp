@@ -27,7 +27,8 @@ StepComponent::StepComponent(int trkIndex, int stpIndex, SequenceProcessor* p) :
 
 void StepComponent::paintButton(juce::Graphics &g, bool mouseIsOver, bool mouseIsDown)
 {
-    state = proc->tracks[trackIndex]->steps[stepIndex]->getState();
+    if(proc->tracks[trackIndex]->steps[stepIndex]->getState() >= 0)
+        state = proc->tracks[trackIndex]->steps[stepIndex]->getState();
     if(isSelected)
     {
         g.setColour(selected);

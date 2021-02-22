@@ -34,11 +34,15 @@ enum stepState
     noteOn
 };
 
+const juce::Identifier sequenceId = juce::Identifier("PiDrumSequence");
 
-struct AtomicInt
-{
-    
-};
+const juce::Identifier stepId = juce::Identifier("PatternStep");
+const juce::Identifier subDivLengthId = juce::Identifier("StepSubDivs");
+const juce::Identifier hasNoteId = juce::Identifier("HasNote");
+const juce::Identifier stepIndexId = juce::Identifier("StepIndex");
+
+const juce::Identifier totalLengthId = juce::Identifier("TotalSequenceSubDivs");
+const juce::Identifier tempoId = juce::Identifier("SequenceTempo");
 
 class StepData
 {
@@ -72,6 +76,8 @@ public:
         }
         return state;
     }
+    juce::ValueTree getStepTree();
+    void loadStepTree(juce::ValueTree t);
     int numSubDivs;
     int indexInTrack;
     int startSubDiv;
@@ -134,6 +140,8 @@ public:
     }
     juce::MidiMessage getNoteOn();
     bool noteOutput;
+    void loadTrackTree(juce::ValueTree t);
+    juce::ValueTree getTrackTree();
 private:
     int lastStepIndex = 0;
     int totalSubDivs;
@@ -148,7 +156,7 @@ class SequenceProcessor
 public:
     SequenceProcessor();
     ~SequenceProcessor() {}
-    float TEMPO;
+    double TEMPO;
     void updateToTempo();
     void setSampleRate(double rate);
     void advanceBySamples(int numSamples);
@@ -157,6 +165,8 @@ public:
     double samplesPerSubDiv;
     double sampleRate;
     double secsPerSubDiv;
+    void loadSequenceTree(juce::ValueTree t);
+    juce::ValueTree getSequenceTree();
 private:
     std::unique_ptr<juce::MidiOutput> midiOut;
     int totalSubDivs;

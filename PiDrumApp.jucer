@@ -4,6 +4,9 @@
               displaySplashScreen="1" jucerFormatVersion="1" version="1">
   <MAINGROUP id="lA12Su" name="PiDrumApp">
     <GROUP id="{9F58E11E-4316-4C36-260B-33F047F4F0A8}" name="Source">
+      <FILE id="zVnqLF" name="PatternLoader.cpp" compile="1" resource="0"
+            file="Source/PatternLoader.cpp"/>
+      <FILE id="jzSHYb" name="PatternLoader.h" compile="0" resource="0" file="Source/PatternLoader.h"/>
       <FILE id="ejKcsr" name="SequenceComponent.cpp" compile="1" resource="0"
             file="Source/SequenceComponent.cpp"/>
       <FILE id="dc5HkY" name="SequenceComponent.h" compile="0" resource="0"
@@ -17,12 +20,6 @@
       <FILE id="yK1407" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="zYQE9v" name="RGBColor.h" compile="0" resource="0" file="Source/RGBColor.h"/>
-      <FILE id="EtQ4cc" name="Sequencer.cpp" compile="1" resource="0" file="Source/Sequencer.cpp"/>
-      <FILE id="iXbgXF" name="Sequencer.h" compile="0" resource="0" file="Source/Sequencer.h"/>
-      <FILE id="g8eujx" name="SequencerPanel.cpp" compile="1" resource="0"
-            file="Source/SequencerPanel.cpp"/>
-      <FILE id="MH5FWQ" name="SequencerPanel.h" compile="0" resource="0"
-            file="Source/SequencerPanel.h"/>
       <FILE id="NBxK3i" name="clap@0.5x.png" compile="0" resource="1" file="GUIAssets/0.5x/clap@0.5x.png"/>
       <FILE id="boLRD7" name="clave@0.5x.png" compile="0" resource="1" file="GUIAssets/0.5x/clave@0.5x.png"/>
       <FILE id="f7QXEF" name="closedHat@0.5x.png" compile="0" resource="1"
