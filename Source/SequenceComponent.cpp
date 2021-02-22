@@ -90,8 +90,8 @@ void TrackComponent::resized()
 
 void TrackComponent::buttonClicked(juce::Button *b)
 {
-    StepComponent* thisStep = dynamic_cast<StepComponent*>(b);
-    proc->tracks[thisStep->trackIndex]->steps[thisStep->stepIndex]->toggleNote();
+    if(StepComponent* thisStep = dynamic_cast<StepComponent*>(b))
+        proc->tracks[thisStep->trackIndex]->steps[thisStep->stepIndex]->toggleNote();
 }
 
 void TrackComponent::clearSelection()
@@ -162,7 +162,10 @@ void TrackComponent::tupletUp()
         endIndex = selectedSteps[selectedSteps.size() - 1]->stepIndex;
         proc->tracks[(int)voiceType]->tupletUp(startIndex, endIndex);
         startNum = endIndex - startIndex + 1;
-        endNum = startNum + 1;
+        if(startNum == 1)
+            endNum = 3;
+        else
+            endNum = startNum + 1;
         stepButtons.removeRange(startIndex, startNum);
         for(int i = 0; i < endNum; ++i)
         {
@@ -200,22 +203,44 @@ void TrackComponent::tupletDown()
     }
 }
 
-//TODO: implement deez in the same fashion as the processor side, such that the pattern manager can pass one ValueTree to both processor side and component side
 void TrackComponent::loadTrackTree(juce::ValueTree t)
 {
-    
+    //because the step component constructor only takes an
+    //index and a track number, all we need to do here is ensure that the OwnedArray has the right NUMBER of steps
+    //sizing and on/off states are handled in the paint/resize functions via pointer to the sequence processor
+    auto currentSteps = stepButtons.size();
+    auto newSteps = t.getNumChildren();
+    if(currentSteps < newSteps)
+    {
+        for(int i = currentSteps; i < newSteps; ++i)
+        {
+            stepButtons.add(new StepComponent((int)voiceType, i, proc));
+            stepButtons.getLast()->addListener(this);
+            stepButtons.getLast()->addMouseListener(this, true);
+            addAndMakeVisible(stepButtons.getLast());
+        }
+    }
+    else if(newSteps < currentSteps)
+    {
+        for(int i = currentSteps; i > newSteps; --i)
+            stepButtons.remove(i, true);
+    }
 }
 //============================================================================
-
+//processor side handles all the sequence-specific data, we just need to resize each track component
 void SequenceComponent::loadPatternTree(juce::ValueTree t)
 {
-    
+    int i = 0;
+    for(auto* trk : trackComponents)
+    {
+        trk->loadTrackTree(t.getChild(i));
+        ++i;
+    }
 }
 
-SequenceComponent::SequenceComponent(SequenceProcessor* p) : header("New Sequence", p), proc(p)
+SequenceComponent::SequenceComponent(SequenceProcessor* p, juce::Component* sib) : proc(p), headerLabel(sib)
 {
     addMouseListener(this, true);
-    addAndMakeVisible(header);
     for(int i = 0; i < 7; ++i)
     {
         trackComponents.add(new TrackComponent(analogVoice(i), proc));
@@ -230,9 +255,8 @@ SequenceComponent::SequenceComponent(SequenceProcessor* p) : header("New Sequenc
 
 void SequenceComponent::resized()
 {
-    header.setBounds(0, 0, getWidth(), HEADER_HEIGHT);
-    auto bottomEdge = HEADER_HEIGHT;
-    auto trackHeight = (getHeight() - HEADER_HEIGHT) / trackComponents.size();
+    auto bottomEdge = 0;
+    auto trackHeight = getHeight() /  trackComponents.size();
     for(auto* t : trackComponents)
     {
         t->setBounds(0, bottomEdge, getWidth(), trackHeight);
@@ -246,6 +270,9 @@ void SequenceComponent::resized()
 
 void SequenceComponent::timerCallback()
 {
+    if(!hasKeyboardFocus(false))
+        grabKeyboardFocus();
+    headerLabel->repaint();
     repaint();
 }
 

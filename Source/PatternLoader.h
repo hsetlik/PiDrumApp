@@ -12,6 +12,8 @@
 #include <JuceHeader.h>
 #include "SequenceComponent.h"
 
+
+
 class PatternManagerComponent : public juce::Component, juce::Button::Listener, juce::ComboBox::Listener
 {
 public:
@@ -23,7 +25,8 @@ public:
     void resized() override;
     void savePattern(juce::String patternName);
     void loadPattern(juce::ValueTree t);
-    juce::TextButton saveButton;
+    juce::Image saveButtonImg;
+    juce::ImageButton saveButton;
     juce::ComboBox patternBox;
     SequenceComponent* seqComponent;
     SequenceProcessor* seqProcessor;

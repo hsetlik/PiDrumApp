@@ -1,11 +1,12 @@
 #include "MainComponent.h"
 
 //==============================================================================
-MainComponent::MainComponent() : processor(), comp(&processor)
+MainComponent::MainComponent() : processor(), comp(&processor, &patternManager), patternManager(&comp, &processor)
 {
     // Make sure you set the size of the component after
     // you add any child components.
     addAndMakeVisible(comp);
+    addAndMakeVisible(patternManager);
     setSize (800, 480);
 
     // Some platforms require permissions to open input channels so request that here
@@ -60,9 +61,9 @@ void MainComponent::paint (juce::Graphics& g)
 
 void MainComponent::resized()
 {
-    comp.setBounds(getBounds());
+    patternManager.setBounds(0, 0, getWidth(), HEADER_HEIGHT);
+    comp.setBounds(0, HEADER_HEIGHT, getWidth(), getHeight() - HEADER_HEIGHT);
     // This is called when the MainContentComponent is resized.
     // If you add any child components, this is where you should
     // update their positions.
-    
 }

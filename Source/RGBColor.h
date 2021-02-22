@@ -12,14 +12,8 @@
 #include <JuceHeader.h>
 struct Color
 {
-    //without fourth argument, returns color with fully opaque alpha
-    static juce::Colour RGBColor(int r, int g, int b)
-    {
-        return(juce::Colour(juce::uint8(r), juce::uint8(g), juce::uint8(b), juce::uint8(255)));
-    }
-
-    //fourth argument sets alpha
-    static juce::Colour RGBColor(int r, int g, int b, int a)
+    //fourth argument sets alpha, gives a fully opaque color by default
+    static juce::Colour RGBColor(int r, int g, int b, int a = 255)
     {
         return(juce::Colour(juce::uint8(r), juce::uint8(g), juce::uint8(b), juce::uint8(a)));
     }

@@ -125,6 +125,8 @@ void TrackData::tupletUp(int firstIndex, int lastIndex)
         //get the selection's total length in subDivs so we know how long each new note needs to be
         auto startNum = lastIndex - firstIndex + 1;
         auto numEnd = startNum + 1;
+        if(startNum == 1)
+            numEnd = 3;
         auto lengthInSubDivs = 0;
         for(int i = 0; i < startNum; ++i)
         {

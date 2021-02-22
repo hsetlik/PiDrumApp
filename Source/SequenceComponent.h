@@ -13,6 +13,7 @@
 #include "SequenceProcessor.h"
 #include "RGBColor.h"
 
+//for the look of the step buttons
 const juce::Colour restColorOff = Color::RGBColor(51, 81, 90);
 const juce::Colour restColorOn = Color::blend(restColorOff, juce::Colours::white, 0.35);
 const juce::Colour noteColorOn = Color::RGBColor(255, 84, 106);
@@ -21,7 +22,7 @@ const juce::Colour deselected = Color::RGBColor(37, 49, 53);
 const juce::Colour selected = Color::RGBColor(159, 207, 219);
 
 const int LABEL_WIDTH = 80;
-const int HEADER_HEIGHT = 45;
+const int HEADER_HEIGHT = 50;
 
 class StepComponent : public juce::ShapeButton
 {
@@ -35,7 +36,6 @@ public:
     int stepIndex;
     SequenceProcessor* proc;
 };
-
 
 //Labels for left-hand side of analog tracks. Just loads & displays the PNGs
 class TrackLabelComponent : public juce::Component
@@ -180,7 +180,7 @@ private:
 class SequenceComponent : public juce::Component, juce::Timer
 {
 public:
-    SequenceComponent(SequenceProcessor* p);
+    SequenceComponent(SequenceProcessor* p, juce::Component* sibling);
     ~SequenceComponent() {}
     void timerCallback() override;
     void resized() override;
@@ -199,6 +199,6 @@ public:
 private:
     juce::OwnedArray<TrackComponent> trackComponents;
     juce::OwnedArray<TrackData>* trackData;
-    SequenceHeader header;
     SequenceProcessor* proc;
+    juce::Component* headerLabel;
 };
