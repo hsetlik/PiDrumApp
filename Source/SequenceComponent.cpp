@@ -83,7 +83,7 @@ void TrackComponent::resized()
     for(auto* s : stepButtons)
     {
         s->setBounds(leftEdge, 0, ceil(proc->tracks[voiceType]->steps[i]->numSubDivs * subDivWidth), getHeight());
-        leftEdge += ceil(proc->tracks[voiceType]->steps[i]->numSubDivs * subDivWidth);
+        leftEdge += proc->tracks[voiceType]->steps[i]->numSubDivs * subDivWidth;
         ++i;
     }
 }
