@@ -9,3 +9,12 @@
 */
 
 #include "PatternLoader.h"
+
+PatternManagerComponent::PatternManagerComponent(SequenceComponent* c, SequenceProcessor* p) : seqComponent(c), seqProcessor(p)
+{
+    saveButton.setButtonText("Save Pattern");
+    addAndMakeVisible(saveButton);
+    addAndMakeVisible(patternBox);
+    saveButton.addListener(this);
+    patternBox.addListener(this);
+}

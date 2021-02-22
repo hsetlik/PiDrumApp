@@ -10,6 +10,21 @@
 
 #pragma once
 #include <JuceHeader.h>
-#include "SequenceProcessor.h"
+#include "SequenceComponent.h"
 
-
+class PatternManagerComponent : public juce::Component, juce::Button::Listener, juce::ComboBox::Listener
+{
+public:
+    PatternManagerComponent(SequenceComponent* c, SequenceProcessor* p);
+    ~PatternManagerComponent() {}
+    void buttonClicked(juce::Button* b) override;
+    void comboBoxChanged(juce::ComboBox* b) override;
+    void paint(juce::Graphics& g) override;
+    void resized() override;
+    void savePattern(juce::String patternName);
+    void loadPattern(juce::ValueTree t);
+    juce::TextButton saveButton;
+    juce::ComboBox patternBox;
+    SequenceComponent* seqComponent;
+    SequenceProcessor* seqProcessor;
+};

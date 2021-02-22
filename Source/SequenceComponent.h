@@ -13,6 +13,13 @@
 #include "SequenceProcessor.h"
 #include "RGBColor.h"
 
+const juce::Colour restColorOff = Color::RGBColor(51, 81, 90);
+const juce::Colour restColorOn = Color::blend(restColorOff, juce::Colours::white, 0.35);
+const juce::Colour noteColorOn = Color::RGBColor(255, 84, 106);
+const juce::Colour noteColorOff = Color::blend(noteColorOn, juce::Colours::black, 0.35f);
+const juce::Colour deselected = Color::RGBColor(37, 49, 53);
+const juce::Colour selected = Color::RGBColor(159, 207, 219);
+
 const int LABEL_WIDTH = 80;
 const int HEADER_HEIGHT = 45;
 
@@ -29,6 +36,8 @@ public:
     SequenceProcessor* proc;
 };
 
+
+//Labels for left-hand side of analog tracks. Just loads & displays the PNGs
 class TrackLabelComponent : public juce::Component
 {
 public:
@@ -127,6 +136,7 @@ public:
     bool hasSelection();
     void tupletUp();
     void tupletDown();
+    void loadTrackTree(juce::ValueTree t);
     std::vector<StepComponent*> selectedSteps;
     int startIndex;
     int endIndex;
@@ -176,6 +186,7 @@ public:
     void resized() override;
     bool keyPressed(const juce::KeyPress &p) override;
     void mouseDown(const juce::MouseEvent& m) override;
+    void loadPatternTree(juce::ValueTree t);
     TrackComponent* selectedTrack()
     {
         for(auto* t : trackComponents)
@@ -186,8 +197,8 @@ public:
         return nullptr;
     }
 private:
+    juce::OwnedArray<TrackComponent> trackComponents;
     juce::OwnedArray<TrackData>* trackData;
     SequenceHeader header;
-    juce::OwnedArray<TrackComponent> trackComponents;
     SequenceProcessor* proc;
 };

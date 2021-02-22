@@ -13,6 +13,7 @@
 
 const int MIN_SUBDIV = 60;
 const int NUM_NOTES = 16;
+//TODO: this may need to change for digital audio track implementation
 const int NUM_TRACKS = 7;
 
 enum analogVoice
@@ -34,6 +35,7 @@ enum stepState
     noteOn
 };
 
+//Identifiers for reading and writing ValueTree/XML
 const juce::Identifier sequenceId = juce::Identifier("PiDrumSequence");
 
 const juce::Identifier stepId = juce::Identifier("PatternStep");
@@ -101,6 +103,7 @@ public:
         currentSubDivIndex = 0;
     }
     ~TrackData() {}
+    //sets the beginning subdivision index for each step in the track
     void setStartSubDivs()
     {
         int total = 0;
@@ -111,12 +114,14 @@ public:
         }
     }
     juce::OwnedArray<StepData> steps;
+    //used to advance through the sequence
     void setToSubDiv(int index)
     {
         currentSubDivIndex = index;
         lastStepIndex = currentStep->indexInTrack;
         for(auto* s : steps)
         {
+            //looping through all steps to find the current one
             if(s->startSubDiv <= currentSubDivIndex && currentSubDivIndex < (s->startSubDiv + s->numSubDivs))
             {
                 currentStep = s;
@@ -126,6 +131,7 @@ public:
             else
                 s->isCurrent = false;
         }
+        //determining whether the SequenceProcessor needs to send a MIDI message from this track
         if(currentStep->hasNote && currentStep->indexInTrack != lastStepIndex)
             noteOutput = true;
         else

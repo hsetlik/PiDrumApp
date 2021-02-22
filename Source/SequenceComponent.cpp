@@ -10,12 +10,6 @@
 
 #include "SequenceComponent.h"
 
-const juce::Colour restColorOff = Color::RGBColor(51, 81, 90);
-const juce::Colour restColorOn = Color::blend(restColorOff, juce::Colours::white, 0.35);
-const juce::Colour noteColorOn = Color::RGBColor(255, 84, 106);
-const juce::Colour noteColorOff = Color::blend(noteColorOn, juce::Colours::black, 0.35f);
-const juce::Colour deselected = Color::RGBColor(37, 49, 53);
-const juce::Colour selected = Color::RGBColor(159, 207, 219);
 
 StepComponent::StepComponent(int trkIndex, int stpIndex, SequenceProcessor* p) : juce::ShapeButton("stepButton", restColorOff, restColorOff, noteColorOff), trackIndex(trkIndex), stepIndex(stpIndex), proc(p)
 {
@@ -112,6 +106,7 @@ void TrackComponent::clearSelection()
 
 StepComponent* TrackComponent::stepAtXPos(int xPos)
 {
+    //finds the step on this track which, if it exists, corresponds to a given x pixel value
     for(int i = 0; i < stepButtons.size(); ++i)
     {
         auto thisX = stepButtons.getUnchecked(i)->getScreenX();
@@ -204,7 +199,18 @@ void TrackComponent::tupletDown()
             stepButtons[i]->stepIndex -= 1;
     }
 }
+
+//TODO: implement deez in the same fashion as the processor side, such that the pattern manager can pass one ValueTree to both processor side and component side
+void TrackComponent::loadTrackTree(juce::ValueTree t)
+{
+    
+}
 //============================================================================
+
+void SequenceComponent::loadPatternTree(juce::ValueTree t)
+{
+    
+}
 
 SequenceComponent::SequenceComponent(SequenceProcessor* p) : header("New Sequence", p), proc(p)
 {
