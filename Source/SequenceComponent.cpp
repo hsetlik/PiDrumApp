@@ -31,6 +31,7 @@ void StepComponent::paintButton(juce::Graphics &g, bool mouseIsOver, bool mouseI
     {
         g.setColour(deselected);
     }
+    //g.setColour(Color::complement())
     g.fillRect(getLocalBounds());
     switch(state)
     {
